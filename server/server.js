@@ -14,6 +14,27 @@ var io = socketIO(server);
 io.on('connection', (socket) => {
     console.log('New User Connected');
 
+    //shown to client from server
+    // socket.emit('newEmail', {
+    //     from: 'Arjun@gmail.com',
+    //     text: 'Hey you are doing gud',
+    //     createAt: 123
+//});
+    socket.emit('newMessage', {
+        from: 'arjun@server.cc',
+        text: 'I am starting the new chat app',
+        createdAt: 0834
+    });
+
+    //shown to server from client
+    // socket.on('createEmail', (newEmail) =>{
+    //     console.log('Create Email', newEmail);
+    // });
+
+    socket.on('createMessage', (newMessage) => {
+        console.log('Create Message', newMessage);
+    });
+
     socket.on('disconnect', () => {
         console.log('User is disconnected');
     });
