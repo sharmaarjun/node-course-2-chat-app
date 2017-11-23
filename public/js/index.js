@@ -9,10 +9,14 @@ var socket = io();
             //     text: 'Hey this is arjun'
             // });
 
-            socket.emit('createMessage', {
-                from: 'chrome@gg.cc',
-                text: 'me replying to you chat message'
-            });
+            // socket.emit('createMessage', {
+            //     from: 'chrome@gg.cc',
+            //     text: 'me replying to you chat message'
+            // });
+        });
+
+        socket.on('newMessage', function(message) {
+            console.log('New Message', message);
         });
 
         socket.on('disconnect', function() {
@@ -22,7 +26,3 @@ var socket = io();
         // socket.on('newEmail', function(email) {
         //     console.log('New Email', email);
         // });
-
-        socket.on('newMessage', function(message) {
-            console.log('New Message', message)
-        });

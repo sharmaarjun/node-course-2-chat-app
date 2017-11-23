@@ -20,19 +20,25 @@ io.on('connection', (socket) => {
     //     text: 'Hey you are doing gud',
     //     createAt: 123
 //});
-    socket.emit('newMessage', {
-        from: 'arjun@server.cc',
-        text: 'I am starting the new chat app',
-        createdAt: 0834
-    });
+    // socket.emit('newMessage', {         // socket emits message to single connection
+    //     from: 'arjun@server.cc',
+    //     text: 'I am starting the new chat app',
+    //     createdAt: 0834
+    // });
 
     //shown to server from client
     // socket.on('createEmail', (newEmail) =>{
     //     console.log('Create Email', newEmail);
     // });
 
-    socket.on('createMessage', (newMessage) => {
-        console.log('Create Message', newMessage);
+    socket.on('createMessage', (message) => {
+        console.log('Create Message', message);
+        //---- io emits message to every single connection
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });
     });
 
     socket.on('disconnect', () => {
