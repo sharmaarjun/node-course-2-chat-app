@@ -14,6 +14,19 @@ var io = socketIO(server);
 io.on('connection', (socket) => {
     console.log('New User Connected');
 
+    //--challenge--
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to the Chat App',
+        createdAt: new Date().getTime()
+    });
+
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'New user joined',
+        createdAt: new Date().getTime()
+    });
+
     //shown to client from server
     // socket.emit('newEmail', {
     //     from: 'Arjun@gmail.com',
@@ -39,6 +52,12 @@ io.on('connection', (socket) => {
             text: message.text,
             createdAt: new Date().getTime()
         });
+        //---- broadcast send message to everyone but not user
+        // socket.broadcast.emit('newMessage', {
+        //     from: message.from,
+        //     text: message.text,
+        //     createdAt: new Date().getTime()
+        // });
     });
 
     socket.on('disconnect', () => {
