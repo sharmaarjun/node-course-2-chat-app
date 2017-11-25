@@ -1,0 +1,36 @@
+.chat {
+    color: red;
+    font-size: 18px;
+    }
+.chat__sidebar {
+    float: left;
+    background-color: cornflowerblue;
+    width: 30%;
+    color: white;
+    text-align: center;
+    height: 100%;
+}
+.chat__messages{
+    float: left;
+    height: 75%;
+}
+#message-form{
+    float: left;
+    width: 48%;
+    }
+#send-location {
+    float: left;
+    top: 0px;
+    background-color: rgb(116, 116, 197);
+    color: white;
+}
+.chat__footer {
+    float: left;
+    bottom: 0px;
+    width: 100%;
+    background-color: grey;
+}
+.chat__main{
+    float: left;
+    width: 70%;
+}
