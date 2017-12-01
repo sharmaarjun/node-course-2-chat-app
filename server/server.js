@@ -2,6 +2,8 @@ const path = require('path'); // inbuild library
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
+const {isRealString} = require('./utils/validation');
+const {Users} = require('./utils/users');
 
 // console.log(__dirname + '/../public');  // earlier we used it
 // console.log(publicPath); // now this will be used
@@ -12,13 +14,27 @@ const port = process.env.PORT || 3000;
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
+var users = new Users();
+
+app.use(express.static(publicPath));
+
 io.on('connection', (socket) => {
     console.log('New User Connected');
+    socket.on('join', (params, callback) => {
+        if(!isRealString(params.name) || !isRealString(params.room)){
+            return callback('Name and Room name are required');
+        }
+        socket.join(params.room);
+        users.removeUser(socket.id);        // Remove user with id
+        users.addUser(socket.id, params.name, params.room);         // then add that user
+        io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+
+        socket.emit('newMessage', generateMessage('Admin', 'Welcome to chat app'));
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
+        callback();
+    });
 
     //--challenge--
-    socket.emit('newMessage', generateMessage('Admin', 'Welcome to chat app'));
-
-    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User joined'));
 
     //shown to client from server
     // socket.emit('newEmail', {
@@ -55,11 +71,15 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('User is disconnected');
+        // console.log('User is disconnected');
+        var user = users.removeUser(socket.id);
+        
+                   if(user) {
+                    io.to(user.room).emit('updateUserList', users.getUserList(user.room));   
+                    io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+                   }
     });
 });
-
-app.use(express.static(publicPath));
 
 server.listen(port, () => {
     console.log(`Server is up on ${port}`);
